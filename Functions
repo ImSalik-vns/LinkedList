@@ -1,0 +1,189 @@
+import java.util.*;
+// Node Class
+class Node{    // Creating a Node Class to create multiple object refrences pointing towards single 
+               // bunch of properties.
+    int data;  // data contains the data that we want to store in LinkedList. 
+               // It can be of any datatype.
+    Node next; // next contains the address of the next Node in the current Node. 
+               // next should be Node type. 
+    public Node(int data){ // parameterized constructor to pass the value of data while Creating
+                           // the object refrences. 
+        this.data = data;  // variable name (data) is same in the Node class and constructor
+                           // so we use 'this' keyword to use our passed value and avoid confusion.
+    }
+}
+public class Main{
+    
+static Node head; // head keeps track of head Node.
+static Node tail; // tail keeps track of tail Node.
+
+// Adding Elements to the LinkedList.
+    public static void addLast(int data){
+        Node newNode = new Node(data);    // creating new object to add element to LL. 
+                                          // Data value passed from main function and then it is
+                                          // passed to the Node class constructor.
+        if (head == null){   // in case there are no elements in the LL, 
+            head = newNode;  // we set our head and tail to the newNode
+            tail = newNode;  // because newNode is currently the only Node and it is head and tail both.
+        }
+        else{                     // When there are more than one Nodes in the LL,
+            tail.next = newNode;  // we assign newNode's address to the tail and,
+            tail = newNode;       // shift tail to newNode.
+        }
+    }
+    
+// Printing LinkedList Elements.
+    public static void display(){
+        Node current = head;      // Setting head value to a temporary Node current not to 
+                                  // manipulate the original head value.
+        while(current != tail){   // condition to make sure our head (current) goes till end (tail).
+            System.out.print(current.data+" ");  // Printing the data at the current Node.
+            current = current.next;  // Updating the value of current Node to next Node.
+        }
+    }
+    
+// Adding Elements to the Start of the LinkedList.
+    public static void addFirst(int data){ 
+        Node newNode = new Node(data);  // Data value passed from main function and then it is
+                                        // passed to the Node class constructor.
+        
+        if (head == null){   // in case there are no elements in the LL, 
+            head = newNode;  // we set our head and tail to the newNode
+            tail = newNode;  // because newNode is currently the only Node and it is head and tail both.
+        }
+        else{                     // When there are more than one Nodes in the LL,
+            newNode.next = head;  // we assign previous current head's address to the newNode and,
+            head = newNode;       // shift head to newNode.
+        }
+    }
+    
+// Romoving First (head) Node from the LinkedList.
+    public static void removeFirst(){
+        if (head == null){       // in case of no elements in LL. 
+            System.out.println("There are no Nodes to remove.");
+        }
+        else if (head == tail){  // If there is only One Node in the LL,
+            head = null;         // we set head and tail to null to remove that single Node
+            tail = null;         // because head and tail were pointing at the same Node.
+        }
+        else{                    // If there are more than one Nodes,
+            head = head.next;    // we update the beggining of LL from head to next Node (head.next). 
+        }
+    }
+    
+// Finding the data at a Given Index in the LinkedList.
+    public static Node getAt(int index){ // Return type Node because we are returning a Node.
+        if (index < 0){
+            System.out.println("Index is out of bound.");
+            return null;
+        }
+        Node current = head;
+        for (int i=0; i<index; i++){
+            if (current == null){
+                System.out.println("Index is out of bound.");
+                return null;
+            }
+            current = current.next;
+        }
+        return current;
+    }
+    
+// Adding a Node in Between the LinkedList on a Given Index.
+    public static void addAt(int index, int data){ // Values passed from the main function.
+        if (index == 0){    // If given index is 0, 
+            addFirst(data); // we add the given data to the 0th Node (First Node) by using addFirst.
+            return;         // And retrun right from here.
+        }
+        
+        Node newNode = new Node(data);     // Otherwise creating a newNode and passing the value.
+        Node current = getAt(index-1);     // Getting the previous index (index-1) of the given
+                                           // index using the getAt function.
+        Node nextOfCurrent = current.next; // finding the address of next Node using current Node
+                                           // (index-1).
+        current.next = newNode;            // Assigning newNode's address to the current Node.
+        newNode.next = nextOfCurrent;      // and Assigning nextOfCurrent's address to newNode.
+    }
+    
+// Removing the Last Node from the LinkedList.
+    public static void removeLast(){
+        if (head == null){       // If there are no Nodes.
+            System.out.println("No Nodes to remove.");
+        }
+        else if (head == tail){  // If there is only one Node, 
+            removeFirst();       // removeFirst Node and,
+            return;              // return.
+        }
+        else{
+            Node current = head;    // Otherwise, creating a temporary Node current with head value.
+            while(current.next != tail){ // Condition to get tail-1 Node address.
+                current = current.next;  // Updating current Node's address to reach tail-1 Node.
+            }
+            current.next = null;         // Setting current.next (tail-1.next) (which is tail) address
+                                         // to null.
+            tail = current;              // Shifting tail to current Node (tail-1).
+        }
+    }
+    
+// Removing the Node at a Given Index from the LinkedList.
+    public static void removeAt(int index){
+        if (head == null || index < 0){ // If there are no Nodes in LL or given index is negative,
+            System.out.println("Invalid Node/Index.");
+            return;
+        }
+        else if (index == 0){   // If given index is 0, 
+            removeFirst();      // remove the First Node using removeFirst function.
+            return;
+        }
+        else{                   // In case there are more than one Nodes in the LL,
+            Node preNode = getAt(index-1);  // Finding the address of previous Node and,
+            Node nextNode = getAt(index+1); // finding the address of next Node,
+            
+            preNode.next = nextNode; // And Assigning nextNode's address to preNode.
+        }
+    }
+	public static void main(String[] args) {
+	    head = null;  // Initially head and tail are set to null
+	    tail = null;  // because there are no elements in the LL initially.
+		Scanner sc=new Scanner(System.in);
+		
+		while(sc.hasNextInt()){   // Running this loop to take input of a LL of undefined size.
+		    int n = sc.nextInt(); // taking input.
+		    addLast(n);           // sending the input to the addLast function to add it to the LL.
+		}
+		
+		System.out.println("Printing the LinkedList.");
+		display();               // Calling display function to print the LL.
+		System.out.println();
+		
+		System.out.println("Adding a Node at the beggining of the LinkedList.");
+		addFirst(25);            // Calling addFirst function to add Nodes in the beggining of LL.
+		display();               // displaying updated LL.
+		System.out.println();
+		
+		System.out.println("Remoing the first Node from the LinkedList.");
+		removeFirst();           // Calling removeFirst function to remove first Node from the LL.
+		display();               // displaying updated LL.
+		System.out.println();
+		
+		System.out.println("Finding the value at a given index.");
+		Node ans = getAt(3);     // Calling getAt function to get the data at given a index and,
+		                         // storing it in a Node because returned value is Nodetype.
+		System.out.println(ans.data);  // Printing the data at given Node.
+		
+		System.out.println("Adding a Node at Any Given Index.");
+		addAt(3, 50);            // Calling addAt function and passing index number and data.
+		display();               // displaying updated LL.
+		System.out.println();
+		
+		System.out.println("Removing the Last Node from the LinkedList.");
+		removeLast();            // Calling removeLast function to remove the last Node from LL.
+		display();               // displaying updated LL.
+		System.out.println();
+		
+		System.out.println("Removing the Node at a Given index from the LinkedList.");
+		removeAt(2);            // Calling removeAt function to remove the Node at given index from LL.
+		display();               // displaying updated LL.
+		System.out.println();
+	}
+}
+
